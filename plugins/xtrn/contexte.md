@@ -58,14 +58,48 @@ Demande au développeur d'ouvrir un terminal JupyterLab et de lancer `git push o
 
 ## Sauvegarde
 
-Le code est sauvegardé quand il est committé **et poussé** sur GitHub. Tant qu'il n'est pas poussé,
-il n'existe que dans ce staging.
+- **Code** : sauvegardé quand il est committé **et poussé** sur GitHub. Tant qu'il n'est pas poussé, il n'existe
+  que dans ce staging.
+- **Données de la production** (dans la console, onglet Sauvegardes) : quotidienne chaque nuit (base à la minute
+  près, et fichiers, gardée 30 jours), hebdomadaire (5 semaines) et mensuelle (3 mois) au format sauvegarde Odoo,
+  et **manuelle** à la demande (« Sauvegarder maintenant », admin, 5 par jour au plus, gardée 3 jours).
+- **Le staging n'a pas de sauvegarde automatique** (comme Odoo.sh) : on le reprend de la production (Rebuild).
+  Avant une opération risquée sur les données du staging, préviens le développeur qu'elles ne sont pas sauvegardées.
 
 ## Mise en production
 
-`xtrn-merge-prod` (dans le terminal, interactif) : la branche `main` rejoint exactement `test`, et la prod
-se met à jour seule ~3 min après. Les commits doivent d'abord être poussés sur `test`.
-Même règle en prod : seuls les modules dont la version a changé sont mis à jour.
+- Dans la console, **Merge → production** (admin) : `main` reprend exactement `test` (avance rapide), puis la
+  prod se déploie seule (~5 min). Le premier Merge crée la production. Les commits doivent d'abord être poussés
+  sur `test`.
+- Équivalent en terminal : `xtrn-merge-prod` (interactif, compte GitHub + jeton demandés).
+- Si `main` contient des commits absents de `test`, le merge est refusé : ramener d'abord `main` dans `test`
+  (`git merge origin/main` sur `test`, puis push).
+- Même règle en prod : seuls les modules dont la version a changé sont mis à jour.
+
+## Console du projet
+
+`https://xtrn.cloud/projet/<client>` (connexion avec le compte GitHub). Tu ne peux pas l'utiliser toi-même :
+quand une action s'y fait, dis au développeur où cliquer. Les actions sur les données et la prod sont réservées
+aux **admins** du projet.
+
+- **Collaborateurs** : comptes GitHub du projet, rôle **admin** (éditeur + gestion des accès et des opérations)
+  ou **membre** (éditeur seulement). Les droits d'écriture sur le dépôt se gèrent sur GitHub.
+- **Accès SSH** au staging (shell, `sftp`, `scp`, même environnement que ce terminal) : chaque collaborateur ajoute
+  sa clé publique, un admin autorise les adresses IP ; connexion `ssh <code>@ssh.dev.xtrn.cloud`.
+- **Projet** : état test / production, **Merge → production**, historique de la branche `test`.
+- **Se connecter** : ouvre la xtrn App avec l'utilisateur de son choix, sans mot de passe (staging : tous les
+  collaborateurs ; production : admins).
+- **Rebuild** (staging) : remplace la base et les fichiers du staging par ceux de la production, neutralisés
+  (mails, paiements, tâches planifiées coupés). **Le code de `test` est conservé.**
+- **Reset to production** (staging) : données **et** code de la production ; la branche `test` est ramenée sur
+  `main` (les commits non mis en production en sortent, ils restent dans l'historique GitHub).
+- **Restaurer…** (onglet Sauvegardes) : depuis une sauvegarde de la production, soit **sur le staging** (données
+  neutralisées et code de cette date, `test` ramenée sur ce commit), soit **la production elle-même** (arrêt de
+  quelques minutes, tout ce qui a été saisi depuis est remplacé, une sauvegarde de sécurité est faite juste avant).
+- Rebuild, Reset et Restaurer **effacent les modifications non committées** de ce staging : avant de les
+  conseiller, fais committer et pousser le travail en cours.
+- URLs : production `https://<client>.xtrn.cloud`, staging `https://<client>.dev.xtrn.cloud`,
+  éditeur `https://<client>.dev.xtrn.cloud/editeur/`.
 
 ## Support
 

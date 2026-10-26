@@ -3,7 +3,8 @@
     "SessionStart": [
       {
         "hooks": [
-          { "type": "command", "command": "cat \"${CLAUDE_PLUGIN_ROOT}\"/contexte.md" }
+          { "type": "command", "command": "cat \"${CLAUDE_PLUGIN_ROOT}\"/contexte.md" },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/mise-a-jour.sh" }
         ]
       }
     ]

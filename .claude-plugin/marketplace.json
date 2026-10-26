@@ -1,0 +1,12 @@
+{
+  "name": "xtrn",
+  "description": "Plugins Claude Code de la plateforme xtrn Cloud",
+  "owner": { "name": "xtrn Cloud", "email": "support@xtrn.cloud" },
+  "plugins": [
+    {
+      "name": "xtrn",
+      "source": "./plugins/xtrn",
+      "description": "Contexte de la plateforme xtrn Cloud et agents de développement (xtrn-dev, xtrn-relecteur)"
+    }
+  ]
+}

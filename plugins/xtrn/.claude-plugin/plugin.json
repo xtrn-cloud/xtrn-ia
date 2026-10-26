@@ -1,0 +1,6 @@
+{
+  "name": "xtrn",
+  "displayName": "xtrn Cloud",
+  "description": "Contexte de la plateforme xtrn Cloud (chargé à chaque session) et agents xtrn-dev et xtrn-relecteur",
+  "author": { "name": "xtrn Cloud", "email": "support@xtrn.cloud" }
+}

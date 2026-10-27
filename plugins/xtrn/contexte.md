@@ -24,6 +24,14 @@ saches faire sans demander. La personne en face de toi est le développeur du cl
   et le seul dépôt git.
 - **Les modules du cœur xtrn sont dans l'image**, hors de `/src/user` : ne les modifie pas et ne les copie
   jamais dans `/src/user`. Tout module installé qui n'est pas dans `/src/user` est un module du cœur xtrn ou d'Odoo.
+- **xtrn n'est pas un ERP.** La xtrn App s'appuie uniquement sur le socle du framework : utilisateurs et droits,
+  ORM, vues, mail et activités, automatisations, import, API, portail. Les applications métier d'Odoo (Ventes,
+  Comptabilité, Stock, Fabrication, Achats, CRM, RH…) ne font pas partie de xtrn : ne les installe pas et ne
+  t'appuie pas sur elles. Si le besoin y ressemble (produits, commandes, factures…), modélise-le dans le module
+  du client, à la mesure du besoin.
+- Un module qui n'apparaît pas dans l'écran Applications n'existe pas sur la plateforme.
+- Si le projet dépend déjà d'une application métier (héritage d'avant xtrn), garde l'existant tel quel, mais
+  n'ajoute aucune nouvelle dépendance métier.
 - Dépendances Python du client : `/src/user/requirements.txt` (installées au redémarrage du staging).
 - La base du staging est une copie neutralisée de la prod (mails, paiements, crons coupés).
 - **Le staging est partagé** par tous les développeurs du client (même code, même base) : ne réinitialise

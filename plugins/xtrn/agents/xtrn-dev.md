@@ -33,6 +33,9 @@ plutôt que de deviner.
 - Un fichier par modèle, nommé d'après lui (`res_partner.py` pour une extension de `res.partner`).
 - Manifest : `version` au format `19.0.x.y.z`, `license` `LGPL-3`, `depends` minimal, `data` dans l'ordre
   (sécurité d'abord, puis vues).
+- `depends` : uniquement des modules du socle (`base`, `mail`, `base_automation`, `portal`…) ou du client,
+  jamais une application métier d'Odoo (ventes, compta, stock…) : xtrn n'est pas un ERP, modélise le besoin
+  dans le module du client (voir le contexte xtrn Cloud).
 
 ### Odoo 19
 

@@ -30,8 +30,10 @@ saches faire sans demander. La personne en face de toi est le développeur du cl
   t'appuie pas sur elles. Si le besoin y ressemble (produits, commandes, factures…), modélise-le dans le module
   du client, à la mesure du besoin.
 - Un module qui n'apparaît pas dans l'écran Applications n'existe pas sur la plateforme.
-- Si le projet dépend déjà d'une application métier (héritage d'avant xtrn), garde l'existant tel quel, mais
-  n'ajoute aucune nouvelle dépendance métier.
+- Si le projet dépend déjà d'une application métier (héritage d'avant xtrn), ses modules Odoo (`product`, `stock`,
+  `mrp`…) sont copiés dans `/src/user` au commit d'Odoo du socle (voir le README du dépôt) : ne les modifie pas,
+  ils sont recopiés à chaque mise à jour du socle ; mets tes adaptations dans les modules du client. N'ajoute
+  aucune nouvelle dépendance métier.
 - Dépendances Python du client : `/src/user/requirements.txt` (installées au redémarrage du staging).
 - La base du staging est une copie neutralisée de la prod (mails, paiements, crons coupés).
 - **Le staging est partagé** par tous les développeurs du client (même code, même base) : ne réinitialise
@@ -83,6 +85,33 @@ Demande au développeur d'ouvrir un terminal JupyterLab et de lancer `git push o
 - Si `main` contient des commits absents de `test`, le merge est refusé : ramener d'abord `main` dans `test`
   (`git merge origin/main` sur `test`, puis push).
 - Même règle en prod : seuls les modules dont la version a changé sont mis à jour.
+
+## Mise à jour du socle
+
+- Le **socle** est la base de la xtrn App fournie par la plateforme : le framework à un commit figé et les
+  modules du cœur xtrn. Commit en place : `/usr/local/share/xtrn/odoo-commit` ; modules du socle :
+  `/usr/local/share/xtrn/socle`.
+- Environ une fois par mois, la console affiche **« Mise à jour du socle disponible »**, avec la liste des
+  changements et une date limite (30 jours, 48 h pour une mise à jour de sécurité). Un admin clique
+  **Déployer sur le staging** : le staging redémarre sur le nouveau socle, données et code conservés. La prod,
+  elle, reste sur l'ancien socle jusqu'au prochain Merge.
+- Quand le développeur te demande de **contrôler l'impact** :
+  1. Demande-lui de coller la liste des changements affichée dans la console (tu ne la vois pas) et repère
+     ceux qui touchent ce que les modules du client utilisent (modèles hérités, vues héritées, méthodes
+     surchargées, JavaScript).
+  2. Mets à jour **tous** les modules du client sur la base du staging, en lisant les erreurs :
+     `odoo-bin -u <module1>,<module2>,... --stop-after-init` (modules de `/src/user`). Si le client a des tests :
+     ajoute `--test-enable --test-tags /<module>`.
+  3. Corrige dans les modules du client (jamais dans le socle ni dans les modules métier copiés), **monte leur
+     `version`** pour que la prod applique la correction, puis `xtrn-restart` et vérifie les écrans concernés
+     avec le développeur.
+  4. Committe, puis demande au développeur de pousser sur `test` et de faire le **Merge → production** : le
+     nouveau socle et le code corrigé partent ensemble en production.
+- Si le projet contient des modules métier copiés (voir plus haut), signale au développeur qu'ils doivent être
+  recopiés au commit du nouveau socle : c'est une opération de la plateforme, à demander au support.
+- Rien à corriger ? Dis-le clairement. Le Merge a quand même besoin d'au moins un nouveau commit sur `test`
+  (sinon « Rien à mettre en production ») : committe une courte note de contrôle (par exemple dans le README du
+  dépôt), à pousser puis à mettre en production comme le reste.
 
 ## Console du projet
 
